@@ -96,7 +96,7 @@ router.get('/generate', (req, res)=>{
       let token = random();
       req.session.token = token;
       parkingUser[token] = new Object();
-      return res.send({message:"successful!"});
+      return res.send({message:"successful!", token:token});
     default: 
       return res.status("401").send("unknow method");
   }
@@ -104,7 +104,7 @@ router.get('/generate', (req, res)=>{
 
 router.get('/saveinfo', (req, res)=>{
   let {token} = req.session;
-  let user = parkingUser[token];
+  let user = parkingUser[token]||parkingUser[req.query.token];
   let accessVariable = ["spaceid", "license", "pid", "timeout"];
   if(user!==undefined){
     for(let action of accessVariable){
@@ -119,7 +119,7 @@ router.get('/saveinfo', (req, res)=>{
 
 router.get('/gotinfo', (req, res)=>{
   let {token} = req.session;
-  let user = parkingUser[token];
+  let user = parkingUser[token]||parkingUser[req.query.token];
   if(user!=undefined){
     return res.send(user);
   }
