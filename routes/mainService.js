@@ -121,6 +121,7 @@ router.get('/gotinfo', (req, res)=>{
   let {token} = req.session;
   let user = parkingUser[token]||parkingUser[req.query.token];
   if(user!=undefined){
+    user.position = accessDevice.find(d=>d.id==user.spaceid)['position'];
     return res.send(user);
   }
   return res.status(403).send({message:"user is not defined"});
