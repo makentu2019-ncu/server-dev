@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>智慧停車場</title>
+  <title>SmartPark</title>
   <link rel="stylesheet" href="src/css/leaflet.css"/>
   <link rel="stylesheet" href="src/css/bootstrap.min.css"/>
   <style>
@@ -18,34 +18,88 @@
 
     #map {
       width: 100%;
-      height: 87%;
+      height: 92%;
       background: #333;
     }
   </style>
 </head>
 <body>
-  <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
-    <h5 class="my-0 mr-md-auto font-weight-normal">Company name</h5>
-    <nav class="my-2 my-md-0 mr-md-3">
-      <a class="p-2 text-dark" href="#">Features</a>
-      <a class="p-2 text-dark" href="#">Enterprise</a>
-      <a class="p-2 text-dark" href="#">Support</a>
-      <a class="p-2 text-dark" href="#">Pricing</a>
-    </nav>
-    <a class="btn btn-outline-primary" href="#">Sign up</a>&nbsp;&nbsp;&nbsp;&nbsp;
-    <a class="btn btn-info" href="#">Sign in</a>
+  <!--<div>
+    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm navbar-header">
+      <h5 class="my-0 mr-md-auto font-weight-normal">Company name</h5>
+      <nav class="my-2 my-md-0 mr-md-3">
+        <a class="p-2 text-dark" href="#">Features</a>
+        <a class="p-2 text-dark" href="#">Enterprise</a>
+        <a class="p-2 text-dark" href="#">Support</a>
+        <a class="p-2 text-dark" href="#">Pricing</a>
+      </nav>
+      <a class="btn btn-outline-primary" href="#">Sign up</a>&nbsp;&nbsp;&nbsp;&nbsp;
+      <a class="btn btn-info" href="#">Sign in</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="#">Action</a></li>
+              <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
+              <li role="separator" class="divider"></li>
+              <li class="dropdown-header">Nav header</li>
+              <li><a href="#">Separated link</a></li>
+              <li><a href="#">One more separated link</a></li>
+            </ul>
+          </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="../navbar/">Default</a></li>
+          <li><a href="../navbar-static-top/">Static top</a></li>
+          <li class="active"><a href="./">Fixed top <span class="sr-only">(current)</span></a></li>
+        </ul>
+      </div>
   </div>
+-->
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="javascript:void(0)">SmartPark</a>
+        </div>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navb">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navb">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="">停車場資訊</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="">預約車位</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="">我的車輛</a>
+            </li>
+          </ul>
+          </div>
+        </div>
+      </nav>
+  </header>
   <div id="map"></div>
+  <script src="src/js/jquery.js"></script>
+  <script src="/src/js/bootstrap.min.js"></script>
+  <script src="src/js/leaflet.js"></script>
 </body>
-<script src="src/js/leaflet.js"></script>
-<script src="src/js/jquery.js"></script>
 <script>
 var centerPoint = [24.9679966,121.1922029]||[25.0173405,121.5397518];
 var map;
 map = L.map('map').setView(centerPoint, 16);
-
+console.log(map.locate({watch:true, setView:true}));
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '<a href="https://www.openstreetmap.org/">OpenStreetMap</a> | <a href="https://noob.tw/openstreetmap/">Tutorial 教學</a>',
+  attribution: '<a href="https://www.openstreetmap.org/">OpenStreetMap</a> | <a href="https://noob.tw/openstreetmap/">Tutorial</a>',
   maxZoom: 18,
 }).addTo(map);
 
