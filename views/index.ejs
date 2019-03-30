@@ -56,6 +56,7 @@
   <script src="src/js/jquery.js"></script>
   <script src="/src/js/bootstrap.min.js"></script>
   <script src="src/js/leaflet.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
 </body>
 <script>
 function getLocation() {
@@ -88,7 +89,12 @@ function drawParkMarker() {
 var map = L.map('map').locate({watch:true, setView:true, setZoom:17});
 var userLocation, userPoint;
 var latlng;
+var socket = io.connect();
 
+socket.on('status', function(data){
+  console.log(data);
+  console.log(data.id);
+});
 getLocation();
 //var myVar = setTimeout(getLocation, 5000);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
