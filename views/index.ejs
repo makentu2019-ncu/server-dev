@@ -7,6 +7,7 @@
   <title>SmartPark</title>
   <link rel="stylesheet" href="src/css/leaflet.css"/>
   <link rel="stylesheet" href="src/css/bootstrap.min.css"/>
+  <link rel="Shortcut Icon" type="image/x-icon" href="src/css/images/favicon.ico"/>
   <style>
     html,
     body {
@@ -16,10 +17,36 @@
       margin: 0;
     }
 
+    .close-btn {
+      display: none;
+    }
+
+    .form-popup {
+      width:100%;
+      height:100vh;
+      opacity: 0.85;
+      background:#000;
+      position:absolute;
+      top:0;
+      left:0;
+      z-index:2;
+      display:none;
+    }
+
+    .form-container {
+      background-color: white;
+      padding: 16px 20px;
+      height: 50vh;
+      width: 50vw;
+      margin:0px auto;
+  padding: 70px 0;
+    }
+
     #map {
       width: 100%;
       height: 92%;
       background: #333;
+      z-index: 1;
     }
   </style>
 </head>
@@ -37,13 +64,10 @@
         <div class="collapse navbar-collapse" id="navb">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-              <a class="nav-link" href="/parkInfo">停車場資訊</a>
+              <a class="nav-link open-btn" href="javascript:void(0)" onclick="openForm(this)">預約車位</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/reservation">預約車位</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/myInfo">我的車輛</a>
+              <a class="nav-link open-button" href="javascript:void(0)" onclick="openForm(this)">我的車輛</a>
             </li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
@@ -52,6 +76,48 @@
         </div>
       </nav>
   </header>
+  <div class="form-popup" id="reservation">
+    <form action="/action_page.php" class="form-container">
+      <h1>預約車位</h1>
+  
+      <label for="email"><b>Email</b></label>
+      <input type="text" placeholder="Enter Email" name="email" required>
+  
+      <label for="psw"><b>Password</b></label>
+      <input type="password" placeholder="Enter Password" name="psw" required>
+  
+      <button type="submit" class="btn btn-success">Login</button>
+      <button type="button" class="btn btn-danger" onclick="closeForm()">Close</button>
+    </form>
+  </div>
+  <div class="form-popup" id="myInfo">
+    <form action="/action_page.php" class="form-container">
+      <center>
+      <div class="form-group">
+        <label for="exampleInputEmail1">Email address</label>
+        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+      </div>
+      <div class="form-group">
+        <label for="exampleInputPassword1">Password</label>
+        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+      </div>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+        <label class="form-check-label" for="exampleCheck1">Check me out</label>
+      </div><br>
+      <button type="submit" class="btn btn-success">Submit</button>&nbsp;&nbsp;
+      <button type="button" class="btn btn-danger" onclick="closeForm()">Close</button>
+    </center>
+      <!-- <h3>我的車輛</h3><br>
+  
+      <label for="license"><b>車牌號碼</b></label><br>
+      <input type="text" placeholder="Enter license number" name="license" required>
+      <br><br>
+      <button type="submit" class="btn btn-success">Submit</button>&nbsp;&nbsp;
+      <button type="button" class="btn btn-danger" onclick="closeForm()">Close</button> -->
+    </form>
+  </div>
   <div id="map"></div>
   <script src="src/js/jquery.js"></script>
   <script src="/src/js/bootstrap.min.js"></script>
@@ -73,6 +139,24 @@ function errorHandler(err) {
   } else if (err.code == 2 || err.code == 3) {
       alert("請嘗試打開定位後或到訊號較強處時，再嘗試一次！");
   }
+}
+
+function openForm(e) {
+  var x = document.getElementsByClassName("form-popup");
+  if (e.innerHTML == "預約車位") {
+    closeForm();
+    x[0].style.display = "block";
+    
+  } else if (e.innerHTML == "我的車輛") {
+    closeForm();
+    x[1].style.display = "block";
+  }
+}
+
+function closeForm() {
+  var x = document.getElementsByClassName("form-popup");
+  for (i = 0; i < 2; i++)
+    x[i].style.display = "none";
 }
 
 function drawPositionMarker(position) {
