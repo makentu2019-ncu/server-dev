@@ -24,45 +24,7 @@
   </style>
 </head>
 <body>
-  <!--<div>
-    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm navbar-header">
-      <h5 class="my-0 mr-md-auto font-weight-normal">Company name</h5>
-      <nav class="my-2 my-md-0 mr-md-3">
-        <a class="p-2 text-dark" href="#">Features</a>
-        <a class="p-2 text-dark" href="#">Enterprise</a>
-        <a class="p-2 text-dark" href="#">Support</a>
-        <a class="p-2 text-dark" href="#">Pricing</a>
-      </nav>
-      <a class="btn btn-outline-primary" href="#">Sign up</a>&nbsp;&nbsp;&nbsp;&nbsp;
-      <a class="btn btn-info" href="#">Sign in</a>
-    </div>
-    <div id="navbar" class="navbar-collapse collapse">
-        <ul class="nav navbar-nav">
-          <li class="active"><a href="#">Home</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#contact">Contact</a></li>
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-            <ul class="dropdown-menu">
-              <li><a href="#">Action</a></li>
-              <li><a href="#">Another action</a></li>
-              <li><a href="#">Something else here</a></li>
-              <li role="separator" class="divider"></li>
-              <li class="dropdown-header">Nav header</li>
-              <li><a href="#">Separated link</a></li>
-              <li><a href="#">One more separated link</a></li>
-            </ul>
-          </li>
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
-          <li><a href="../navbar/">Default</a></li>
-          <li><a href="../navbar-static-top/">Static top</a></li>
-          <li class="active"><a href="./">Fixed top <span class="sr-only">(current)</span></a></li>
-        </ul>
-      </div>
-  </div>
--->
-<header>
+  <header>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -75,15 +37,17 @@
         <div class="collapse navbar-collapse" id="navb">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-              <a class="nav-link" href="">停車場資訊</a>
+              <a class="nav-link" href="/parkInfo">停車場資訊</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="">預約車位</a>
+              <a class="nav-link" href="/reservation">預約車位</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="">我的車輛</a>
+              <a class="nav-link" href="/myInfo">我的車輛</a>
             </li>
           </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a class="nav-link" href="./">我的位置</a></li>
           </div>
         </div>
       </nav>
@@ -94,72 +58,43 @@
   <script src="src/js/leaflet.js"></script>
 </body>
 <script>
-var centerPoint = [24.9679966,121.1922029]||[25.0173405,121.5397518];
-var map;
-map = L.map('map').setView(centerPoint, 16);
-console.log(map.locate({watch:true, setView:true}));
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '<a href="https://www.openstreetmap.org/">OpenStreetMap</a> | <a href="https://noob.tw/openstreetmap/">Tutorial</a>',
-  maxZoom: 18,
-}).addTo(map);
-
-var marker = L.marker(centerPoint);
-marker.addTo(map).bindPopup("<h1>Service center</h1><p>這是測試的popup</p>").openPopup();
-for(var i=0;i<10;i++){
-  let point = L.marker([
-    centerPoint[0]+(Math.random()*0.01)-0.005,
-    centerPoint[1]+(Math.random()*0.01)-0.005
-  ]);
-  console.log(point);
-  // point.addTo(map);
-}
-
-function test(){
-  // L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-	// 	maxZoom: 18,
-	// 	attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-	// 		'<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-	// 		'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-	// 	id: 'mapbox.streets'
-	// }).addTo(map);
-
-	L.marker(centerPoint).addTo(map)
-		.bindPopup("<b>Hello world!</b><br />I am a popup.").openPopup();
-
-	L.circle([51.508, -0.11], 500, {
-		color: 'red',
-		fillColor: '#f03',
-		fillOpacity: 0.5
-	}).addTo(map).bindPopup("I am a circle.");
-
-	L.polygon([
-		[51.509, -0.08],
-		[51.503, -0.06],
-		[51.51, -0.047]
-	]).addTo(map).bindPopup("I am a polygon.");
-
-
-	var popup = L.popup();
-
-	function onMapClick(e) {
-		popup
-			.setLatLng(e.latlng)
-			.setContent("You clicked the map at " + e.latlng.toString())
-			.openOn(map);
-	}
-
-	map.on('click', onMapClick);
-}
-//https://dashboard1999.kcg.gov.tw/data/kaohsiung.json
-// $.getJSON('/simple/kaohsiung.json', function(r){
-//   console.log(r);
-//   L.geoJSON(r, {color: '#333', weight: 0.7}).addTo(map);
-// })
-function randomPutMarker(len = 1){
-  for(var i=0;i<(len||1023);i++){
-    var marker = L.marker([25.0173405,121.5397518].map(v=>v+=(Math.random()-0.5)*0.009));
-    marker.addTo(map);
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(drawPositionMarker, errorHandler);
+  } else { 
+    x.innerHTML = "Geolocation is not supported by this browser.";
   }
 }
+
+function errorHandler(err) {
+  if (err.code == 1) {
+      alert("請先打開或允許定位！");
+  } else if (err.code == 2 || err.code == 3) {
+      alert("請嘗試打開定位後或到訊號較強處時，再嘗試一次！");
+  }
+}
+
+function drawPositionMarker(position) {
+  userLocation = new Array(position.coords.latitude, position.coords.longitude);
+  userPoint = L.marker(userLocation).addTo(map).bindTooltip("現在位置");
+  console.log(userLocation);
+  // setTimeout(getLocation, 5000);
+}
+
+function drawParkMarker() {
+  
+}
+
+var map = L.map('map').locate({watch:true, setView:true, setZoom:17});
+var userLocation, userPoint;
+var latlng;
+
+getLocation();
+//var myVar = setTimeout(getLocation, 5000);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '<a href="https://www.openstreetmap.org/">OpenStreetMap</a> | <a href="https://noob.tw/openstreetmap/">Tutorial</a>',
+  maxZoom: 17,
+}).addTo(map);
+
 </script>
 </html>
