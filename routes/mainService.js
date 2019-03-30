@@ -3,6 +3,7 @@ var router = express.Router();
 
 const random = require('../modules/random'); //生成random access token
 const searchRange = 0.01;
+const parkingUser = [];
 
 var accessDevice = []; // 停車場基準位置
 var memory = new Object(); //停車場具體停車位資訊
@@ -89,6 +90,42 @@ router.post('/update', (req, res) => {  //更新停車場位置
   // res.status(501).send({ error: "it is not finished yet" })
 });
 
+router.get('/generate', (req, res)=>{
+  switch(req.query.method){
+    case "token":
+      let token = random();
+      req.session.token = token;
+      parkingUser[token] = new Object();
+      return res.send({message:"successful!"});
+    default: 
+      return res.status("401").send("unknow method");
+  }
+});
+
+router.get('/saveinfo', (req, res)=>{
+  let {token} = req.session;
+  let user = parkingUser[token];
+  let accessVariable = ["spaceid", "license", "pid", "timeout"];
+  if(user!==undefined){
+    for(let action of accessVariable){
+      let data = req.query[action];
+      if(data!==undefined)
+        parkingUser[token][action] = data;
+    }
+    return res.send({message:"successful"});
+  }
+  return res.status(403).send({message:"user is not defined"});
+});
+
+router.get('/gotinfo', (req, res)=>{
+  let {token} = req.session;
+  let user = parkingUser[token];
+  if(user!=undefined){
+    return res.send(user);
+  }
+  return res.status(403).send({message:"user is not defined"});
+});
+
 //debug用
 router.get('/remove', (req, res)=>{
   let {index} = req.query
@@ -102,4 +139,4 @@ router.get('/remove', (req, res)=>{
   res.send(status?"remove successful":"remove fail");
 });
 
-module.exports = router;
+module.exports = router
