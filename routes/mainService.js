@@ -102,13 +102,13 @@ router.get('/generate', (req, res)=>{
   }
 });
 
-router.get('/saveinfo', (req, res)=>{
+router.post('/saveinfo', (req, res)=>{
   let {token} = req.session;
   let user = parkingUser[token]||parkingUser[req.query.token];
   let accessVariable = ["spaceid", "license", "pid", "timeout"];
   if(user!==undefined){
     for(let action of accessVariable){
-      let data = req.query[action];
+      let data = req.body[action];
       if(data!==undefined)
         parkingUser[token][action] = data;
     }

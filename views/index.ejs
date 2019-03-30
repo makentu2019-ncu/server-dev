@@ -101,11 +101,12 @@
   </header>
   <div class="center">
       <div class="form-popup" id="myInfo">
-        <form action="/gotinfo" method="get" class="form-container">
+        <form action="/api/gotinfo" method="get" class="form-container">
           <h3>我的車輛</h3><br><br>
           <div class="form-group">
             <label for="license"><b>License Number</b></label>
-            <input type="email" class="form-control" id="LicenseNumber" placeholder="Enter License Number" required>
+            <input type="text" class="form-control" id="LicenseNumber" placeholder="Enter License Number" required>
+            <input type="hidden" name="token" value="">
           </div>
           <br><br>
           <button type="submit" class="btn btn-success">Submit</button>&nbsp;&nbsp;
@@ -113,13 +114,22 @@
         </form>
       </div>
       <div class="form-popup" id="reservation">
-      <form action="/action_page.php" class="form-container">
-        <h3>我的車輛</h3><br><br>
+      <form action="/api/saveinfo" method="post" class="form-container">
+        <h3>預約車位</h3><br>
         <div class="form-group">
           <label for="license"><b>License Number</b></label>
-          <input type="email" class="form-control" id="LicenseNumber" placeholder="Enter License Number" required>
+          <input type="text" class="form-control" name="license">
         </div>
-        <br><br>
+        <div class="form-group">
+          <label for="pid"><b>Parking ID</b></label>
+          <input type="text" readonly class="form-control" name="pid" value="">
+        </div>
+        <div class="form-group">
+          <label for="id"><b>Space ID</b></label>
+          <input type="text" readonly class="form-control" name="spaceid" value="">
+        </div>
+        <input type="hidden" name="token" value="">
+        <br>
         <button type="submit" class="btn btn-success">Submit</button>&nbsp;&nbsp;
         <button type="button" class="btn btn-danger" onclick="closeForm()">Close</button>
       </form>
@@ -149,17 +159,28 @@ function errorHandler(err) {
   }
 }
 
-function openForm(e) {
+function openForm(e, id = 0) {
+  $('input[name=token]').val(token);
+  closeForm();
+  $('#mask').fadeIn(500);
   if (e.innerHTML == "我的車輛") {
-    closeForm();
-    $('#mask').fadeIn(500);
     $('#myInfo').fadeIn(500);
+  } else if (e.innerHTML == "預約車位") {
+    $('input[name=pid]').val(parkingLot[id].id);
+    for (i = 0; i < parkingLot[id].space.length; i++) {
+      //console.log(parkingLot[id].space[i]);
+      if (parkingLot[id].space[i].status) {
+        $('input[name=spaceid]').val(i);
+        break;
+      }
+    }
+    $('#reservation').fadeIn(500);
   }
 }
 
 function closeForm() {
   var x = document.getElementsByClassName("form-popup");
-  for (i = 0; i < 1; i++)
+  for (i = 0; i < 2; i++)
     x[i].style.display = "none";
   $('#mask').fadeOut(200);
 }
@@ -177,24 +198,38 @@ function drawParkMarker(data) {
     if (data.space[i].status)
       spaceNum++;
   }
+
+  popupStr = `停車場編號 : ${data.id}<br>停車場空位數 : ${spaceNum}<br>`;
+  if (spaceNum > 0)
+    popupStr += `<a class="btn btn-outline-info btn-sm open-button" href="javascript:void(0)" onclick="openForm(this, ${data.id})">預約車位</a>`
+
   parkingMarker[data.id] = (L.marker()
     .setLatLng(latlng)
     .addTo(map)
-    .bindPopup(`停車場編號 : ${data.id}<br>停車場空位數 : ${spaceNum}<br><a href="">`));
+    .bindPopup(popupStr));
 }
 
 function updateParkMarker(data) {
-  var spaceNum = 0;
+  var spaceNum = 0;  
   for (i = 0; i < data.space.length; i++) {
+    parkingLot[data.id].space[i].status = data.space[i].status;
+    parkingLot[data.id].space[i].floor = data.space[i].floor;
+    parkingLot[data.id].space[i].pirce = data.space[i].price;
+  }
+  for (i = 0; i < parkingLot[data.id].length; i++)
     if (data.space[i].status)
       spaceNum++;
-  }
-  parkingMarker[data.id]._popup._content = (`停車場編號 : ${data.id}<br>停車場空位數 : ${spaceNum}`);
+  popupStr = `停車場編號 : ${data.id}<br>停車場空位數 : ${spaceNum}<br>`;
+  if (spaceNum > 0)
+    popupStr += `<a class="btn btn-outline-info btn-sm open-button" href="javascript:void(0)" onclick="openForm(this, ${data.id})">預約車位</a>`
+
+  parkingMarker[data.id]._popup._content = (popupStr);
 }
 
 var map = L.map('map').locate({watch:true, setView:true, setZoom:16});
 var userLocation, userPoint;
 var latlng;
+var token;
 var parkingLot = [], parkingMarker = [];
 var socket = io.connect();
 
@@ -205,8 +240,8 @@ $.ajax({
   data: {
     method: "token"
   }
-}).done(function() {
-  console.log(document.cookie);
+}).done(function(res) {
+  token = res.token;
 });
 
 socket.on('status', function(data){
