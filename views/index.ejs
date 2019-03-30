@@ -22,24 +22,48 @@
     }
 
     .form-popup {
-      width:100%;
-      height:100vh;
-      opacity: 0.85;
-      background:#000;
-      position:absolute;
-      top:0;
-      left:0;
-      z-index:2;
+      text-align: center;
+      position: absolute;
+      top:17%;
+      left:25%;
+      z-index:5;
       display:none;
     }
 
     .form-container {
       background-color: white;
       padding: 16px 20px;
-      height: 50vh;
-      width: 50vw;
+      height: 65vh;
+      border-radius: 20px;
+      border: 2px solid white;
+      top: 15%;
       margin:0px auto;
-  padding: 70px 0;
+    }
+
+    #mask {
+      opacity: 0.6;
+      background-color: #000;
+      position: absolute;
+      top:0;
+      left:0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      display: none;
+    }
+
+    @media screen and (max-width: 750px){
+      .form-container {
+        width: 60vw;
+        padding: 7vh 0 0.5vw 0.5vw;
+      }
+    }
+
+    @media screen and (min-width: 750px){
+      .form-container {
+        width: 50vw;
+        padding: 7vh 0 2vw 2vw;
+      }
     }
 
     #map {
@@ -64,60 +88,32 @@
         <div class="collapse navbar-collapse" id="navb">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-              <a class="nav-link open-btn" href="javascript:void(0)" onclick="openForm(this)">預約車位</a>
-            </li>
-            <li class="nav-item">
               <a class="nav-link open-button" href="javascript:void(0)" onclick="openForm(this)">我的車輛</a>
+            </li>
+            <li>
+              <a class="nav-link" href="./">我的位置</a>
             </li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li><a class="nav-link" href="./">我的位置</a></li>
           </div>
         </div>
       </nav>
   </header>
-  <div class="form-popup" id="reservation">
-    <form action="/action_page.php" class="form-container">
-      <h1>預約車位</h1>
-  
-      <label for="email"><b>Email</b></label>
-      <input type="text" placeholder="Enter Email" name="email" required>
-  
-      <label for="psw"><b>Password</b></label>
-      <input type="password" placeholder="Enter Password" name="psw" required>
-  
-      <button type="submit" class="btn btn-success">Login</button>
-      <button type="button" class="btn btn-danger" onclick="closeForm()">Close</button>
-    </form>
+  <div class="center">
+    <div class="form-popup" id="myInfo">
+      <form action="/action_page.php" class="form-container">
+        <h3>我的車輛</h3><br><br>
+        <div class="form-group">
+          <label for="license"><b>License Number</b></label>
+          <input type="email" class="form-control" id="LicenseNumber" placeholder="Enter License Number" required>
+        </div>
+        <br><br>
+        <button type="submit" class="btn btn-success">Submit</button>&nbsp;&nbsp;
+        <button type="button" class="btn btn-danger" onclick="closeForm()">Close</button>
+      </form>
+    </div>
   </div>
-  <div class="form-popup" id="myInfo">
-    <form action="/action_page.php" class="form-container">
-      <center>
-      <div class="form-group">
-        <label for="exampleInputEmail1">Email address</label>
-        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-      </div>
-      <div class="form-group">
-        <label for="exampleInputPassword1">Password</label>
-        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-      </div>
-      <div class="form-check">
-        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-        <label class="form-check-label" for="exampleCheck1">Check me out</label>
-      </div><br>
-      <button type="submit" class="btn btn-success">Submit</button>&nbsp;&nbsp;
-      <button type="button" class="btn btn-danger" onclick="closeForm()">Close</button>
-    </center>
-      <!-- <h3>我的車輛</h3><br>
-  
-      <label for="license"><b>車牌號碼</b></label><br>
-      <input type="text" placeholder="Enter license number" name="license" required>
-      <br><br>
-      <button type="submit" class="btn btn-success">Submit</button>&nbsp;&nbsp;
-      <button type="button" class="btn btn-danger" onclick="closeForm()">Close</button> -->
-    </form>
-  </div>
+  <div id="mask"></div>
   <div id="map"></div>
   <script src="src/js/jquery.js"></script>
   <script src="/src/js/bootstrap.min.js"></script>
@@ -142,21 +138,18 @@ function errorHandler(err) {
 }
 
 function openForm(e) {
-  var x = document.getElementsByClassName("form-popup");
-  if (e.innerHTML == "預約車位") {
+  if (e.innerHTML == "我的車輛") {
     closeForm();
-    x[0].style.display = "block";
-    
-  } else if (e.innerHTML == "我的車輛") {
-    closeForm();
-    x[1].style.display = "block";
+    $('#mask').fadeIn(500);
+    $('#myInfo').fadeIn(500);
   }
 }
 
 function closeForm() {
   var x = document.getElementsByClassName("form-popup");
-  for (i = 0; i < 2; i++)
+  for (i = 0; i < 1; i++)
     x[i].style.display = "none";
+  $('#mask').fadeOut(200);
 }
 
 function drawPositionMarker(position) {
