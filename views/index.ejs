@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>智慧停車場</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin="" />
+  <link rel="stylesheet" href="src/css/leaflet.css"/>
+  <link rel="stylesheet" href="src/css/bootstrap.min.css"/>
   <style>
     html,
     body {
@@ -17,17 +18,27 @@
 
     #map {
       width: 100%;
-      height: 100%;
+      height: 87%;
       background: #333;
     }
   </style>
 </head>
 <body>
+  <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+    <h5 class="my-0 mr-md-auto font-weight-normal">Company name</h5>
+    <nav class="my-2 my-md-0 mr-md-3">
+      <a class="p-2 text-dark" href="#">Features</a>
+      <a class="p-2 text-dark" href="#">Enterprise</a>
+      <a class="p-2 text-dark" href="#">Support</a>
+      <a class="p-2 text-dark" href="#">Pricing</a>
+    </nav>
+    <a class="btn btn-outline-primary" href="#">Sign up</a>&nbsp;&nbsp;&nbsp;&nbsp;
+    <a class="btn btn-info" href="#">Sign in</a>
+  </div>
   <div id="map"></div>
 </body>
-<script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
-  crossorigin=""></script>
-<script src="https://unpkg.com/jquery"></script>
+<script src="src/js/leaflet.js"></script>
+<script src="src/js/jquery.js"></script>
 <script>
 var centerPoint = [24.9679966,121.1922029]||[25.0173405,121.5397518];
 var map;
@@ -39,7 +50,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 var marker = L.marker(centerPoint);
-marker.addTo(map).bindPopup("<h1>Servcei center</h1><p>這是測試的popup</p>").openPopup();
+marker.addTo(map).bindPopup("<h1>Service center</h1><p>這是測試的popup</p>").openPopup();
 for(var i=0;i<10;i++){
   let point = L.marker([
     centerPoint[0]+(Math.random()*0.01)-0.005,
