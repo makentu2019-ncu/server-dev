@@ -28,11 +28,12 @@
       left:25%;
       z-index:5;
       display:none;
+      padding: 20px;
     }
 
     .form-container {
       background-color: white;
-      padding: 16px 20px;
+      padding: 20px 20px;
       height: 65vh;
       border-radius: 20px;
       border: 2px solid white;
@@ -55,14 +56,13 @@
     @media screen and (max-width: 750px){
       .form-container {
         width: 60vw;
-        padding: 7vh 0 0.5vw 0.5vw;
+        padding: 10px;
       }
     }
 
     @media screen and (min-width: 750px){
       .form-container {
         width: 50vw;
-        padding: 7vh 0 2vw 2vw;
       }
     }
 
@@ -88,10 +88,13 @@
         <div class="collapse navbar-collapse" id="navb">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-              <a class="nav-link open-button" href="javascript:void(0)" onclick="openForm(this)">我的車輛</a>
+              <a class="nav-link open-button" href="javascript:void(0)" onclick="openForm(this);getInfo()">我的車位</a>
             </li>
             <li>
               <a class="nav-link" href="./">我的位置</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link open-button" href="javascript:void(0)" onclick="openForm(this);">登記車位</a>
             </li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
@@ -100,21 +103,44 @@
       </nav>
   </header>
   <div class="center">
-      <div class="form-popup" id="myInfo">
-        <form action="/api/gotinfo" method="get" class="form-container">
-          <h3>我的車輛</h3><br><br>
-          <div class="form-group">
-            <label for="license"><b>License Number</b></label>
-            <input type="text" class="form-control" id="LicenseNumber" placeholder="Enter License Number" required>
-            <input type="hidden" name="token" value="">
-          </div>
-          <br><br>
-          <button type="submit" class="btn btn-success">Submit</button>&nbsp;&nbsp;
-          <button type="button" class="btn btn-danger" onclick="closeForm()">Close</button>
-        </form>
-      </div>
-      <div class="form-popup" id="reservation">
-      <form action="/api/saveinfo" method="post" class="form-container">
+    <div class="form-popup" id="setInfo">
+      <form action="/" class="form-container">
+        <h3>登記車位</h3><br>
+        <div class="form-group">
+          <label for="license"><b>License Number</b></label>
+          <input type="text" class="form-control" name="license">
+        </div>
+        <div class="form-group">
+          <label for="pid"><b>Parking ID</b></label>
+          <input type="text" class="form-control" name="pid" value="">
+        </div>
+        <div class="form-group">
+          <label for="id"><b>Space ID</b></label>
+          <input type="text" class="form-control" name="spaceid" value="">
+        </div>
+        <input type="hidden" name="token" value="">
+        <br>
+        <button type="button" onclick="setInfo()" class="btn btn-success">Submit</button>&nbsp;&nbsp;
+        <button type="button" class="btn btn-danger" onclick="closeForm()">Close</button>
+      </form>
+    </div>
+    <div class="form-popup" id="myInfo">
+      <form action="/api/gotinfo" method="get" class="form-container">
+        <h3>我的車位</h3><br><br>
+        <div class="form-group">
+          <label for="license"><b>License Number</b></label>
+          <div id="license" class="alert alert-info"></div>
+        </div>
+        <div class="form-group">
+          <label for="place"><b>Parking Place</b></label>
+          <div id="place" class="alert alert-info"></div>
+        </div>
+        <br><br>
+        <button type="button" class="btn btn-danger" onclick="closeForm()">Close</button>
+      </form>
+    </div>
+    <div class="form-popup" id="reservation">
+      <form action="/" class="form-container">
         <h3>預約車位</h3><br>
         <div class="form-group">
           <label for="license"><b>License Number</b></label>
@@ -130,7 +156,7 @@
         </div>
         <input type="hidden" name="token" value="">
         <br>
-        <button type="submit" class="btn btn-success">Submit</button>&nbsp;&nbsp;
+        <button type="button" onclick="reserve()" class="btn btn-success">Submit</button>&nbsp;&nbsp;
         <button type="button" class="btn btn-danger" onclick="closeForm()">Close</button>
       </form>
     </div>
@@ -151,6 +177,61 @@ function getLocation() {
   }
 }
 
+function reserve() {
+  $.ajax({
+    url: "api/saveinfo",
+    method: "post",
+    data: {
+      license: $('input[name=license]').val(),
+      pid: $('input[name=pid]').val(),
+      spaceid: $('input[name=spaceid]').val(),
+      token: token
+    }
+  }).done(function(res) {
+    if (res.message == "successful") {
+      alert("Success!");
+      closeForm();
+    }
+    //console.log(res);
+  });
+}
+
+function setInfo() {
+  $.ajax({
+    url: "api/saveinfo",
+    method: "post",
+    data: {
+      license: $('input[name=license]').val(),
+      pid: $('input[name=pid]').val(),
+      spaceid: $('input[name=spaceid]').val(),
+      token: token
+    }
+  }).done(function(res) {
+    if (res.message == "successful") {
+      alert("Success!");
+      closeForm();
+    }
+    //console.log(res);
+  });
+}
+
+function getInfo() {
+  $.ajax({
+    url: "api/gotinfo",
+    method: "get",
+    data: {
+      token: token
+    }
+  }).done(function(res) {
+    console.log(res);
+    $('#place').html("Parking ID : " + res.pid + "<br>Space ID : " + res.spaceid);
+    $('#license').html(res.license)
+  }).fail(function(res){
+    closeForm();
+    alert("尚未註冊或輸入資料！");
+  });
+}
+
 function errorHandler(err) {
   if (err.code == 1) {
       alert("請先打開或允許定位！");
@@ -160,27 +241,37 @@ function errorHandler(err) {
 }
 
 function openForm(e, id = 0) {
+  $('input[type=text]').val('');
   $('input[name=token]').val(token);
   closeForm();
   $('#mask').fadeIn(500);
-  if (e.innerHTML == "我的車輛") {
+  if (e.innerHTML == "我的車位") {
     $('#myInfo').fadeIn(500);
   } else if (e.innerHTML == "預約車位") {
     $('input[name=pid]').val(parkingLot[id].id);
+    console.log(parkingLot[id]);
+    var flag = false;
     for (i = 0; i < parkingLot[id].space.length; i++) {
-      //console.log(parkingLot[id].space[i]);
+      console.log(parkingLot[id].space[i]);
       if (parkingLot[id].space[i].status) {
         $('input[name=spaceid]').val(i);
+        flag = true;
         break;
       }
     }
+    if (!flag) {
+      alert('暫無車位，請重新選擇！');
+      closeForm();
+    }
     $('#reservation').fadeIn(500);
+  } else if (e.innerHTML == "登記車位") {
+    $('#setInfo').fadeIn(500);
   }
 }
 
 function closeForm() {
   var x = document.getElementsByClassName("form-popup");
-  for (i = 0; i < 2; i++)
+  for (i = 0; i < x.length; i++)
     x[i].style.display = "none";
   $('#mask').fadeOut(200);
 }
@@ -189,12 +280,49 @@ function drawPositionMarker(position) {
   userLocation = new Array(position.coords.latitude, position.coords.longitude);
   userPoint = L.marker(userLocation).addTo(map).bindTooltip("現在位置");
   console.log("NOW: " + userLocation);
+  initParkMarker();
+}
+
+function initParkMarker() {
+  $.ajax({
+    url: "api/status",
+    method: "get",
+    data: {
+      lat: userLocation[0],
+      lon: userLocation[1]
+    }
+  }).done(function(res) {
+    res.map(function(item) {
+      parkingLot[item.id] = item;
+      var latlng = L.latLng(item.position);
+      var myIcon = L.icon({iconUrl:'/src/css/images/marker-icon-red.png'});
+      var spaceNum = 0;
+      for (i = 0; i < item.space.length; i++) {
+        if (item.space[i].status)
+          spaceNum++;
+      }
+
+      popupStr = `停車場編號 : ${item.id}<br>停車場空位數 : ${spaceNum}<br>`;
+      if (spaceNum > 0)
+        popupStr += `<a class="btn btn-outline-info btn-sm open-button" href="javascript:void(0)" onclick="openForm(this, ${item.id})">預約車位</a>`
+      tooltip = item.name;
+
+      parkingMarker[item.id] = (L.marker()
+        .setIcon(myIcon)
+        .setLatLng(latlng)
+        .addTo(map)
+        .bindTooltip(tooltip)
+        .bindPopup(popupStr));
+    });
+  })
 }
 
 function drawParkMarker(data) {
   var latlng = L.latLng(data.position);
+  var myIcon = L.icon({iconUrl:'/src/css/images/marker-icon-red.png'});
   var spaceNum = 0;
   for (i = 0; i < data.space.length; i++) {
+    //console.log(data.space[i]);
     if (data.space[i].status)
       spaceNum++;
   }
@@ -204,21 +332,26 @@ function drawParkMarker(data) {
     popupStr += `<a class="btn btn-outline-info btn-sm open-button" href="javascript:void(0)" onclick="openForm(this, ${data.id})">預約車位</a>`
 
   parkingMarker[data.id] = (L.marker()
+    .setIcon(myIcon)
     .setLatLng(latlng)
     .addTo(map)
     .bindPopup(popupStr));
 }
 
 function updateParkMarker(data) {
-  var spaceNum = 0;  
+  // console.log("update");
+  var spaceNum = 0;
+ // console.log(parkingLot[result].space);
   for (i = 0; i < data.space.length; i++) {
     parkingLot[data.id].space[i].status = data.space[i].status;
     parkingLot[data.id].space[i].floor = data.space[i].floor;
     parkingLot[data.id].space[i].pirce = data.space[i].price;
   }
-  for (i = 0; i < parkingLot[data.id].length; i++)
-    if (data.space[i].status)
+  // console.log(parkingLot[data.id]);
+  for (i = 0; i < parkingLot[data.id].space.length; i++) {
+    if (parkingLot[data.id].space[i].status)
       spaceNum++;
+    }
   popupStr = `停車場編號 : ${data.id}<br>停車場空位數 : ${spaceNum}<br>`;
   if (spaceNum > 0)
     popupStr += `<a class="btn btn-outline-info btn-sm open-button" href="javascript:void(0)" onclick="openForm(this, ${data.id})">預約車位</a>`
@@ -226,9 +359,8 @@ function updateParkMarker(data) {
   parkingMarker[data.id]._popup._content = (popupStr);
 }
 
-var map = L.map('map').locate({watch:true, setView:true, setZoom:16});
+var map = L.map('map').locate({setView:true}).setZoom(16);
 var userLocation, userPoint;
-var latlng;
 var token;
 var parkingLot = [], parkingMarker = [];
 var socket = io.connect();
@@ -241,16 +373,16 @@ $.ajax({
     method: "token"
   }
 }).done(function(res) {
+  console.log(res.token);
   token = res.token;
 });
 
 socket.on('status', function(data){
   //console.log(data);
   var result = $.map(parkingLot, function(item, index) {
-    return item.id
+    if(item)  return item.id
   }).indexOf(data.id);
   if (result == -1) {
-    // console.log("新增:"+data.id);
     parkingLot.push(data);
     drawParkMarker(data);
   } else {

@@ -26,9 +26,9 @@ var space = [
 function registered(){
   let value = {
     uuid:random(8),
-    lat:25.0131203+(Math.random()*0.01-0.005),
-    lon:121.5368873+(Math.random()*0.01-0.005),
-    name:"virtualDevice",
+    lat:25.0500772+(Math.random()*0.01-0.005),
+    lon:121.5312799+(Math.random()*0.01-0.005),
+    name:"virtualDevice" + Math.random()*10,
   };
   let option = {
     url:`${server}/api/registered?uuid=${encodeURI(random(8))}&lat=${value.lat}&lon=${value.lon}&name=${value.name}`
@@ -101,7 +101,7 @@ function status(){
         }
       }
       update();
-    }, (Math.random()*4000+1000));
+    }, (Math.random()*4000+10000));
   });
 }
 
