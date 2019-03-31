@@ -182,7 +182,7 @@ function reserve() {
     url: "api/saveinfo",
     method: "post",
     data: {
-      license: $('input[name=license]').val(),
+      license: $('#reservation input[name=license]').val(),
       pid: $('input[name=pid]').val(),
       spaceid: $('input[name=spaceid]').val(),
       token: token
@@ -201,7 +201,7 @@ function setInfo() {
     url: "api/saveinfo",
     method: "post",
     data: {
-      license: $('input[name=license]').val(),
+      license: $('#setInfo input[name=license]').val(),
       pid: $('input[name=pid]').val(),
       spaceid: $('input[name=spaceid]').val(),
       token: token
